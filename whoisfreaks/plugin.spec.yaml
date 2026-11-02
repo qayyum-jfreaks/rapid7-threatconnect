@@ -1,0 +1,423 @@
+plugin_spec_version: v2
+extension: plugin
+products: [insightconnect]
+name: whoisfreaks
+title: WhoisFreaks
+vendor: whoisfreaks
+support: community
+supported_versions: ["WhoisFreaks_api v3.4, v3.3, v2.0, v1.0"]
+status: []
+description: WhoisFreaks (https://www.whoisfreaks.com) Unleash the Power of Data with Our Domain and IP Intelligence Gain real-time DNS, domain, and IP intelligence to strengthen security, protect your brand, and drive smarter decisions with our advanced data platform.
+version: 1.0.0
+connection_version: 2
+sdk:
+  type: slim
+  version: 6.6.0
+  user: nobody
+resources:
+  source_url: https://github.com/rapid7/insightconnect-plugins/tree/master/plugins/whoisfreaks
+  license_url: https://github.com/rapid7/insightconnect-plugins/blob/master/LICENSE
+  vendor_url: https://www.whoisfreaks.com/
+key_features:
+  - "WHOIS"
+  - "Domain Lookup"
+  - "Brand Monitor"
+  - "IP Lookup"
+  - "DNS Lookup"
+requirements: ["Requires an API Key from WhoisFreaks"]
+troubleshooting: "There is no troubleshooting for this Plugin"
+links: ["[WhoisFreaks](https://www.whoisfreaks.com)"]
+tags:
+  - domain
+  - whois
+  - ip
+  - intel
+  - dns
+references:
+  - name: WhoisFreaks NRD
+    url: https://whoisfreaks.com/products/newly-registered-domains
+  - name: Threat Feeds
+    url: https://whoisfreaks.com/products/threat-intelligence-feed
+  - name: WhoisFreaks API Documentation
+    url: https://whoisfreaks.com/documentation
+hub_tags:
+  use_cases:
+    [
+      threat_intelligence,
+      brand_monitoring,
+      domain_reputation,
+      newly_registered_domains,
+      threat_feeds,
+      domain_intelligence,
+      ip_intelligence,
+      dns_intelligence,
+    ]
+  keywords: [domain, whois, ip, intel]
+  features: []
+enable_cache: true
+language: python
+
+connection:
+  api_key:
+    title: API Key
+    description: WhoisFreaks API key (sent as X-API-KEY header)
+    type: string
+    required: true
+    secret: true
+    example: your_api_key_here
+  base_url:
+    title: Base URL
+    description: Base URL for stream and status endpoints
+    type: string
+    required: true
+    default: https://files.whoisfreaks.com
+    example: https://files.whoisfreaks.com
+  api_url:
+    title: API URL
+    description: Base URL for lookup endpoints
+    type: string
+    required: true
+    default: https://api.whoisfreaks.com
+    example: https://api.whoisfreaks.com
+
+
+actions:
+  live_whois:
+    title: Live WHOIS
+    description: Perform a live WHOIS lookup for a domain
+    input:
+      domainName:
+        title: Domain Name
+        description: Domain name to query
+        type: string
+        required: true
+        example: example.com
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: WHOIS record
+        type: object
+        required: false
+
+  historical_whois:
+    title: Historical WHOIS
+    description: Retrieve historical WHOIS records for a domain (paginated)
+    input:
+      domainName:
+        title: Domain Name
+        description: Domain name to query historical WHOIS for
+        type: string
+        required: true
+        example: example.com
+      whois:
+        title: WHOIS Mode
+        description: Must be set to "historical"
+        type: string
+        required: true
+        default: historical
+        example: historical
+      page:
+        title: Page
+        description: Page number for paginated results
+        type: integer
+        required: false
+        example: 1
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: List of historical WHOIS records
+        type: "[]object"
+        required: false
+
+  reverse_whois:
+    title: Reverse WHOIS
+    description: Find domains sharing a WHOIS attribute (keyword, email, owner, or company). At least one criteria field is required.
+    input:
+      whois:
+        title: WHOIS Mode
+        description: Must be set to "reverse"
+        type: string
+        required: true
+        default: reverse
+        example: reverse
+      keyword:
+        title: Keyword
+        description: Domain keyword to search for in WHOIS records
+        type: string
+        required: false
+        example: example
+      email:
+        title: Email
+        description: Email address to search for in WHOIS records (supports exact or regex)
+        type: string
+        required: false
+        example: admin@example.com
+      owner:
+        title: Owner
+        description: Owner name to search for in WHOIS records
+        type: string
+        required: false
+        example: John Doe
+      company:
+        title: Company
+        description: Company name to search for in WHOIS records
+        type: string
+        required: false
+        example: Example Inc
+      mode:
+        title: Mode
+        description: Result detail level
+        type: string
+        required: false
+        enum: [mini, default]
+        default: default
+        example: default
+      exact:
+        title: Exact Match
+        description: Whether to match exactly (true) or partially (false)
+        type: string
+        required: false
+        enum: ["true", "false"]
+        default: "false"
+        example: "true"
+      page:
+        title: Page
+        description: Page number for paginated results
+        type: integer
+        required: false
+        example: 1
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: List of matching WHOIS records
+        type: "[]object"
+        required: false
+
+  dns_lookup:
+    title: DNS Lookup
+    description: Perform a live DNS lookup for a domain or IP address. At least one of domainName or ipAddress is required.
+    input:
+      domainName:
+        title: Domain Name
+        description: Domain name for DNS lookup
+        type: string
+        required: false
+        example: example.com
+      ipAddress:
+        title: IP Address
+        description: IP address for reverse DNS (PTR) lookup
+        type: string
+        required: false
+        example: 8.8.8.8
+      type:
+        title: Record Type
+        description: DNS record type (e.g. A, AAAA, MX, NS, TXT, all)
+        type: string
+        required: false
+        example: all
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: DNS records
+        type: object
+        required: false
+
+  ip_whois:
+    title: IP WHOIS
+    description: Perform a WHOIS lookup for an IP address
+    input:
+      ip:
+        title: IP Address
+        description: IPv4 or IPv6 address to query
+        type: string
+        required: true
+        example: 8.8.8.8
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: IP WHOIS record
+        type: object
+        required: false
+
+  asn_whois:
+    title: ASN WHOIS
+    description: Perform a WHOIS lookup for an Autonomous System Number
+    input:
+      asn:
+        title: ASN
+        description: Autonomous System Number (with or without "as" prefix)
+        type: string
+        required: true
+        example: AS15169
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: ASN WHOIS record
+        type: object
+        required: false
+
+  domain_reputation:
+    title: Domain Reputation
+    description: Retrieve the threat score and reputation assessment for a domain
+    input:
+      domainName:
+        title: Domain Name
+        description: Domain to assess (must contain at least one dot, max 253 characters)
+        type: string
+        required: true
+        example: example.com
+    output:
+      response:
+        title: Response
+        description: Domain reputation and risk assessment
+        type: object
+        required: false
+
+triggers:
+  newly_registered_domains:
+    title: Newly Registered Domains
+    description: Poll a newly-registered-domain stream. Select the TLD family to determine the API path, and set whois to choose headerless (false) or header-on-every-page (true) CSV mode.
+    input:
+      date:
+        title: Date
+        description: Required YYYY-MM-DD. Must fall between available_from and last_update for the selected TLD family.
+        type: string
+        required: true
+        example: "2026-09-14"
+      batch_size:
+        title: Batch Size
+        description: Number of rows per emitted batch (controls the limit parameter)
+        type: integer
+        default: 500
+        required: true
+      max_rows_per_run:
+        title: Max Rows per Run
+        description: Cap on total rows fetched in a single trigger run
+        type: integer
+        default: 50000
+        required: true
+      dedupe_window_days:
+        title: Dedupe Window Days
+        description: Suppress duplicate events seen within this window
+        type: integer
+        default: 1
+        required: true
+      tld_family:
+        title: TLD Family
+        description: Selects the stream path (gtld, cctld, cleaned_gtld, cleaned_cctld, or dns)
+        type: string
+        required: true
+        enum: [gtld, cctld, cleaned_gtld, cleaned_cctld, dns]
+        example: gtld
+      whois:
+        title: Include WHOIS
+        description: false = headerless CSV pages; true = header on every page
+        type: boolean
+        default: false
+        required: true
+    output:
+      events:
+        title: Events
+        description: Batched rows from the stream
+        type: "[]object"
+        required: false
+      next_offset:
+        title: Next Offset
+        description: Offset to resume from on the next run
+        type: integer
+        required: false
+
+  threat_feed:
+    title: Threat Feed
+    description: Poll a WhoisFreaks threat feed (phishing, malware, or spam).
+    input:
+      date:
+        title: Date
+        description: Required YYYY-MM-DD. Must fall between available_from and last_update for the selected threat feed.
+        type: string
+        required: true
+        example: "2026-10-12"
+      batch_size:
+        title: Batch Size
+        description: Number of rows per emitted batch (controls the limit parameter)
+        type: integer
+        default: 500
+        required: true
+      max_rows_per_run:
+        title: Max Rows per Run
+        description: Cap on total rows fetched in a single trigger run
+        type: integer
+        default: 50000
+        required: true
+      dedupe_window_days:
+        title: Dedupe Window Days
+        description: Suppress duplicate events seen within this window
+        type: integer
+        default: 1
+        required: true
+      threat_type:
+        title: Threat Type
+        description: Which threat feed to poll
+        type: string
+        required: true
+        enum: [phishing, malware, spam]
+        example: phishing
+    output:
+      events:
+        title: Events
+        description: Batched rows from the stream
+        type: "[]object"
+        required: false
+      next_offset:
+        title: Next Offset
+        description: Offset to resume from on the next run
+        type: integer
+        required: false
