@@ -1,47 +1,107 @@
 {
-	"spec": "095a34570e14abddf408554de14008a7",
-	"manifest": "bb6356ed26331836b3d6e036abf5ad67",
-	"setup": "a57cadfb5ecec4088fe968d00f3c5f6e",
+	"spec": "cc1916d5b9d99dbde7870bfd52ef7f86",
+	"manifest": "28464e8ae26e7508014e236c60ab90fe",
+	"setup": "ed57555ff63f593cfd183e5d48a7ce18",
 	"schemas": [
 		{
 			"identifier": "asn_whois/schema.py",
-			"hash": "35c848373af2c609a136d5a015d33e9c"
+			"hash": "30fef052c9213267263c0782ee8a981c"
+		},
+		{
+			"identifier": "bulk_dns/schema.py",
+			"hash": "7be90bd797be49ede134e7babba0d3fb"
+		},
+		{
+			"identifier": "bulk_domain_availability/schema.py",
+			"hash": "1d6c86b96e569770d2cc9c391e2b3b33"
+		},
+		{
+			"identifier": "bulk_ip_geolocation/schema.py",
+			"hash": "f714104406ccee6f288fec39ecdb7f0d"
+		},
+		{
+			"identifier": "bulk_ip_reputation/schema.py",
+			"hash": "d8bcabe92611662b686756737a58a354"
+		},
+		{
+			"identifier": "bulk_ip_security/schema.py",
+			"hash": "6629ff01478828a385e0a085b5a2abbb"
+		},
+		{
+			"identifier": "bulk_whois/schema.py",
+			"hash": "75fd359ec07829654dea46a59008c37c"
 		},
 		{
 			"identifier": "dns_lookup/schema.py",
-			"hash": "c2a735607fded1b6a1cd6a370f1b7a08"
+			"hash": "e8c47ca03ddda808cece370a66664a87"
+		},
+		{
+			"identifier": "domain_availability/schema.py",
+			"hash": "d78b475f074d01cd18a583e7e6efaf5c"
 		},
 		{
 			"identifier": "domain_reputation/schema.py",
-			"hash": "5068cde9e09d913f0f1170af3fa5b663"
+			"hash": "0927aa5a36f64e6daa3b76decf2b2297"
+		},
+		{
+			"identifier": "historical_dns/schema.py",
+			"hash": "45213667c5cf3ec3710b07de233dd7d3"
 		},
 		{
 			"identifier": "historical_whois/schema.py",
-			"hash": "fb547a8238d2713be25f9f8c17c6d519"
+			"hash": "61b0f2be9234f68ee95eef51a4196361"
+		},
+		{
+			"identifier": "ip_geolocation/schema.py",
+			"hash": "2d51813581de78b1533b6e115efd85bb"
+		},
+		{
+			"identifier": "ip_reputation/schema.py",
+			"hash": "6cda283f03ef51bc49af734969664abd"
+		},
+		{
+			"identifier": "ip_security/schema.py",
+			"hash": "9ce1649dda9775cdafe09bd783cfc3df"
 		},
 		{
 			"identifier": "ip_whois/schema.py",
-			"hash": "80f29a8d1bb9f25ddf01189673b34140"
+			"hash": "e72f17411f609ac6174342d6be26b3c5"
 		},
 		{
 			"identifier": "live_whois/schema.py",
 			"hash": "68bbd7e27a5b20c66d8bcd338425d4f3"
 		},
 		{
+			"identifier": "reverse_dns/schema.py",
+			"hash": "6defea0baf8cb36915041229e86de028"
+		},
+		{
 			"identifier": "reverse_whois/schema.py",
-			"hash": "ff139ecfbd6b44836ad430812e1b6ced"
+			"hash": "f549d2692d7485cd9f9957b39a7fdff0"
+		},
+		{
+			"identifier": "ssl_lookup/schema.py",
+			"hash": "49bb76823bdd949e3fd23cb4cbc5d5e7"
+		},
+		{
+			"identifier": "subdomains/schema.py",
+			"hash": "c485282839fde64888a437e201c49f05"
+		},
+		{
+			"identifier": "typosquatting/schema.py",
+			"hash": "ccf0e55c923d4885f8e8c7fb54f63712"
 		},
 		{
 			"identifier": "connection/schema.py",
-			"hash": "b88f2ce6dc1ed7745809b5318c63d13d"
+			"hash": "d80375db06795c1fa01e11bd98b006a5"
 		},
 		{
 			"identifier": "newly_registered_domains/schema.py",
-			"hash": "6190b7b39b5dd8fe5a6eaf97300ff61b"
+			"hash": "33b6823b31c6cb6a04d7c90881ccde51"
 		},
 		{
 			"identifier": "threat_feed/schema.py",
-			"hash": "961841b762fe61721e35ced8d5bf1468"
+			"hash": "6f26a970c251eb5c5500600a844cc37b"
 		}
 	]
 }

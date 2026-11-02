@@ -4,8 +4,8 @@ import os
 sys.path.append(os.path.abspath("../"))
 
 from unittest import TestCase
-from komand_whoisfreaks.connection.connection import Connection
-from komand_whoisfreaks.actions.dns_lookup import DnsLookup
+from icon_whoisfreaks.connection.connection import Connection
+from icon_whoisfreaks.actions.dns_lookup import DnsLookup
 import json
 import logging
 

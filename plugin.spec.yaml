@@ -7,14 +7,14 @@ vendor: whoisfreaks
 support: community
 supported_versions: ["WhoisFreaks_api v3.4, v3.3, v2.0, v1.0"]
 status: []
-description: WhoisFreaks (https://www.whoisfreaks.com) Unleash the Power of Data with Our Domain and IP Intelligence Gain real-time DNS, domain, and IP intelligence to strengthen security, protect your brand, and drive smarter decisions with our advanced data platform.
+description: WhoisFreaks (https://www.whoisfreaks.com) Unleash the Power of Data with Our Domain and IP Intelligence Gain real-time DNS, domain, and IP intelligence to strengthen security, protect your brand, and drive smarter decisions with our advanced data platform
 version: 1.0.0
 version_history:
   - "1.0.0 - Initial plugin"
 connection_version: 2
 sdk:
   type: slim
-  version: 6.6.0
+  version: 6.6.1
   user: nobody
 resources:
   source_url: https://github.com/rapid7/insightconnect-plugins/tree/master/plugins/whoisfreaks
@@ -31,7 +31,7 @@ troubleshooting: "There is no troubleshooting for this Plugin"
 links: ["[WhoisFreaks](https://www.whoisfreaks.com)"]
 tags:
   - domain
-  - whois
+  - WHOIS
   - ip
   - intel
   - dns
@@ -43,17 +43,7 @@ references:
   - name: WhoisFreaks API Documentation
     url: https://whoisfreaks.com/documentation
 hub_tags:
-  use_cases:
-    [
-      threat_intelligence,
-      brand_monitoring,
-      domain_reputation,
-      newly_registered_domains,
-      threat_feeds,
-      domain_intelligence,
-      ip_intelligence,
-      dns_intelligence,
-    ]
+  use_cases: [threat_detection_and_response, data_enrichment, data_utility]
   keywords: [intel]
   features: []
 enable_cache: true
@@ -65,22 +55,7 @@ connection:
     description: WhoisFreaks API key (sent as X-API-KEY header)
     type: string
     required: true
-    secret: true
     example: your_api_key_here
-  base_url:
-    title: Base URL
-    description: Base URL for stream and status endpoints
-    type: string
-    required: true
-    default: https://files.whoisfreaks.com
-    example: https://files.whoisfreaks.com
-  api_url:
-    title: API URL
-    description: Base URL for lookup endpoints
-    type: string
-    required: true
-    default: https://api.whoisfreaks.com
-    example: https://api.whoisfreaks.com
 
 actions:
   live_whois:
@@ -120,7 +95,7 @@ actions:
         example: example.com
       whois:
         title: WHOIS Mode
-        description: Must be set to "historical"
+        description: Must be set to historical
         type: string
         required: true
         default: historical
@@ -148,11 +123,11 @@ actions:
 
   reverse_whois:
     title: Reverse WHOIS
-    description: Find domains sharing a WHOIS attribute (keyword, email, owner, or company). At least one criteria field is required.
+    description: Find domains sharing a WHOIS attribute (keyword, email, owner, or company) - at least one criteria field is required
     input:
       whois:
         title: WHOIS Mode
-        description: Must be set to "reverse"
+        description: Must be set to reverse
         type: string
         required: true
         default: reverse
@@ -168,7 +143,7 @@ actions:
         description: Email address to search for in WHOIS records (supports exact or regex)
         type: string
         required: false
-        example: admin@example.com
+        example: user@example.com
       owner:
         title: Owner
         description: Owner name to search for in WHOIS records
@@ -191,12 +166,11 @@ actions:
         example: default
       exact:
         title: Exact Match
-        description: Whether to match exactly (true) or partially (false)
-        type: string
+        description: Match exactly (true) or partially (false)
+        type: boolean
         required: false
-        enum: ["true", "false"]
-        default: "false"
-        example: "true"
+        default: false
+        example: true
       page:
         title: Page
         description: Page number for paginated results
@@ -218,9 +192,34 @@ actions:
         type: "[]object"
         required: false
 
+  bulk_whois:
+    title: Bulk WHOIS
+    description: Fetch WHOIS records for up to 100 domains in one request
+    input:
+      domains:
+        title: Domains
+        description: List of domain names (max 100)
+        type: "[]string"
+        required: true
+        example: ["example.com", "example.org"]
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: Bulk WHOIS result
+        type: object
+        required: false
+
   dns_lookup:
     title: DNS Lookup
-    description: Perform a live DNS lookup for a domain or IP address. At least one of domainName or ipAddress is required.
+    description: Perform a live DNS lookup for a domain or IP address - at least one of domainName or ipAddress is required
     input:
       domainName:
         title: Domain Name
@@ -230,13 +229,13 @@ actions:
         example: example.com
       ipAddress:
         title: IP Address
-        description: IP address for reverse DNS (PTR) lookup
+        description: IP address for reverse DNS PTR lookup
         type: string
         required: false
         example: 8.8.8.8
       type:
         title: Record Type
-        description: DNS record type (e.g. A, AAAA, MX, NS, TXT, all)
+        description: DNS record type such as A, AAAA, MX, NS, TXT, or all
         type: string
         required: false
         example: all
@@ -255,11 +254,286 @@ actions:
         type: object
         required: false
 
+  historical_dns:
+    title: Historical DNS
+    description: Retrieve historical DNS records for a domain (paginated)
+    input:
+      domainName:
+        title: Domain Name
+        description: Domain name to query historical DNS for
+        type: string
+        required: true
+        example: example.com
+      type:
+        title: Record Type
+        description: DNS record type filter such as A, AAAA, MX, NS, TXT, SOA, or CNAME
+        type: string
+        required: false
+        example: A
+      page:
+        title: Page
+        description: Page number for paginated results
+        type: integer
+        required: false
+        example: 1
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: List of historical DNS records
+        type: "[]object"
+        required: false
+
+  reverse_dns:
+    title: Reverse DNS
+    description: Reverse DNS lookup by record value (IP, mail server, CNAME target, or NS name)
+    input:
+      value:
+        title: Value
+        description: Record value to reverse search (IP, hostname, etc)
+        type: string
+        required: true
+        example: 8.8.8.8
+      type:
+        title: Record Type
+        description: DNS record type to reverse search
+        type: string
+        required: true
+        enum: [a, aaaa, mx, cname, ns, txt, soa]
+        example: a
+      exact:
+        title: Exact Match
+        description: Match exactly (true) or partially (false)
+        type: boolean
+        required: false
+        default: false
+        example: false
+      page:
+        title: Page
+        description: Page number for paginated results
+        type: integer
+        required: false
+        example: 1
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: List of matching reverse DNS records
+        type: "[]object"
+        required: false
+
+  bulk_dns:
+    title: Bulk DNS
+    description: Perform live DNS lookups for multiple domains or IPs in one request
+    input:
+      type:
+        title: Record Type
+        description: DNS record type to query
+        type: string
+        required: true
+        enum: [a, aaaa, mx, cname, ns, txt, soa]
+        example: a
+      values:
+        title: Values
+        description: List of domains or IPs to query
+        type: "[]string"
+        required: true
+        example: ["example.com", "example.org"]
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: Bulk DNS result
+        type: object
+        required: false
+
+  domain_availability:
+    title: Domain Availability
+    description: Check whether a domain is available for registration
+    input:
+      domainName:
+        title: Domain Name
+        description: Domain name to check
+        type: string
+        required: true
+        example: example.com
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: Domain availability result
+        type: object
+        required: false
+
+  bulk_domain_availability:
+    title: Bulk Domain Availability
+    description: Check availability for up to 100 domains in one request
+    input:
+      domains:
+        title: Domains
+        description: List of domain names (max 100)
+        type: "[]string"
+        required: true
+        example: ["example.com", "example.org"]
+    output:
+      response:
+        title: Response
+        description: Bulk domain availability result
+        type: object
+        required: false
+
+  typosquatting:
+    title: Typosquatting
+    description: Find typosquatting variants of a keyword (paginated)
+    input:
+      keyword:
+        title: Keyword
+        description: Keyword or brand name to search typosquatting variants for
+        type: string
+        required: true
+        example: example
+      page:
+        title: Page
+        description: Page number for paginated results
+        type: integer
+        required: false
+        example: 1
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: List of typosquatting variants
+        type: "[]object"
+        required: false
+
+  subdomains:
+    title: Subdomains
+    description: Retrieve subdomains for a domain (paginated, filterable by date and status)
+    input:
+      domainName:
+        title: Domain Name
+        description: Base domain to enumerate subdomains for
+        type: string
+        required: true
+        example: example.com
+      after:
+        title: After
+        description: Optional YYYY-MM-DD lower bound on record date
+        type: string
+        required: false
+        example: "2026-01-01"
+      before:
+        title: Before
+        description: Optional YYYY-MM-DD upper bound on record date
+        type: string
+        required: false
+        example: "2026-12-31"
+      status:
+        title: Status
+        description: Optional subdomain status filter
+        type: string
+        required: false
+        example: active
+      page:
+        title: Page
+        description: Page number for paginated results
+        type: integer
+        required: false
+        example: 1
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: List of subdomains
+        type: "[]object"
+        required: false
+
+  ssl_lookup:
+    title: SSL Lookup
+    description: Retrieve live SSL certificate information for a domain
+    input:
+      domainName:
+        title: Domain Name
+        description: Domain name to retrieve SSL certificate for
+        type: string
+        required: true
+        example: example.com
+      chain:
+        title: Include Chain
+        description: Include full certificate chain in the response
+        type: boolean
+        required: false
+        default: false
+        example: false
+      sslRaw:
+        title: Include Raw
+        description: Include raw PEM certificate in the response
+        type: boolean
+        required: false
+        default: false
+        example: false
+      format:
+        title: Format
+        description: Response format
+        type: string
+        required: false
+        enum: [json, xml]
+        default: json
+        example: json
+    output:
+      response:
+        title: Response
+        description: SSL certificate record
+        type: object
+        required: false
+
   ip_whois:
     title: IP WHOIS
     description: Perform a WHOIS lookup for an IP address
     input:
-      ip:
+      ipAddress:
         title: IP Address
         description: IPv4 or IPv6 address to query
         type: string
@@ -286,7 +560,7 @@ actions:
     input:
       asn:
         title: ASN
-        description: Autonomous System Number (with or without "as" prefix)
+        description: Autonomous System Number with or without the as prefix
         type: string
         required: true
         example: AS15169
@@ -311,7 +585,7 @@ actions:
     input:
       domainName:
         title: Domain Name
-        description: Domain to assess (must contain at least one dot, max 253 characters)
+        description: Domain to assess - must contain at least one dot and be at most 253 characters
         type: string
         required: true
         example: example.com
@@ -322,16 +596,118 @@ actions:
         type: object
         required: false
 
+  ip_geolocation:
+    title: IP Geolocation
+    description: Retrieve geolocation data for an IP address
+    input:
+      ipAddress:
+        title: IP Address
+        description: IPv4 or IPv6 address to geolocate
+        type: string
+        required: true
+        example: 8.8.8.8
+    output:
+      response:
+        title: Response
+        description: IP geolocation record
+        type: object
+        required: false
+
+  bulk_ip_geolocation:
+    title: Bulk IP Geolocation
+    description: Retrieve geolocation data for multiple IPs in one request
+    input:
+      ips:
+        title: IP Addresses
+        description: List of IPv4 or IPv6 addresses
+        type: "[]string"
+        required: true
+        example: ["8.8.8.8", "1.1.1.1"]
+    output:
+      response:
+        title: Response
+        description: Bulk IP geolocation result
+        type: object
+        required: false
+
+  ip_security:
+    title: IP Security
+    description: Retrieve security intelligence for an IP address (threats, proxies, VPN, TOR)
+    input:
+      ipAddress:
+        title: IP Address
+        description: IPv4 or IPv6 address to check
+        type: string
+        required: true
+        example: 8.8.8.8
+    output:
+      response:
+        title: Response
+        description: IP security record
+        type: object
+        required: false
+
+  bulk_ip_security:
+    title: Bulk IP Security
+    description: Retrieve security intelligence for multiple IPs in one request
+    input:
+      ips:
+        title: IP Addresses
+        description: List of IPv4 or IPv6 addresses
+        type: "[]string"
+        required: true
+        example: ["8.8.8.8", "1.1.1.1"]
+    output:
+      response:
+        title: Response
+        description: Bulk IP security result
+        type: object
+        required: false
+
+  ip_reputation:
+    title: IP Reputation
+    description: Retrieve the reputation score and risk assessment for an IP address
+    input:
+      ipAddress:
+        title: IP Address
+        description: IPv4 or IPv6 address to check
+        type: string
+        required: true
+        example: 8.8.8.8
+    output:
+      response:
+        title: Response
+        description: IP reputation record
+        type: object
+        required: false
+
+  bulk_ip_reputation:
+    title: Bulk IP Reputation
+    description: Retrieve reputation scores for multiple IPs in one request
+    input:
+      ips:
+        title: IP Addresses
+        description: List of IPv4 or IPv6 addresses
+        type: "[]string"
+        required: true
+        example: ["8.8.8.8", "1.1.1.1"]
+    output:
+      response:
+        title: Response
+        description: Bulk IP reputation result
+        type: object
+        required: false
+
 triggers:
   newly_registered_domains:
     title: Newly Registered Domains
-    description: Poll a newly-registered-domain stream. Select the TLD family to determine the API path, and set whois to choose headerless (false) or header-on-every-page (true) CSV mode.
+    description: Poll a newly-registered-domain stream. Select the TLD family to determine the API path, and set WHOIS to choose headerless (false) or header-on-every-page (true) CSV mode
     input:
       date:
         title: Date
-        description: Required YYYY-MM-DD. Must fall between available_from and last_update for the selected TLD family.
+        description: Optional YYYY-MM-DD backfill seed. Must be between available_from and last_update for the feed. Once this date is fully ingested, the trigger automatically continues with the latest date reported by the status endpoint. Intermediate dates between the seed and the latest are not backfilled. Omit to start from the latest date immediately
         type: string
-        required: true
+        required: false
         example: "2026-09-14"
       batch_size:
         title: Batch Size
@@ -339,18 +715,14 @@ triggers:
         type: integer
         default: 500
         required: true
-      max_rows_per_run:
-        title: Max Rows per Run
-        description: Cap on total rows fetched in a single trigger run
+        example: 500
+      poll_interval_minutes:
+        title: Poll Interval Minutes
+        description: Minutes to sleep between status checks after finishing a date
         type: integer
-        default: 50000
+        default: 60
         required: true
-      dedupe_window_days:
-        title: Dedupe Window Days
-        description: Suppress duplicate events seen within this window
-        type: integer
-        default: 1
-        required: true
+        example: 60
       tld_family:
         title: TLD Family
         description: Selects the stream path (gtld, cctld, cleaned_gtld, cleaned_cctld, or dns)
@@ -360,10 +732,11 @@ triggers:
         example: gtld
       whois:
         title: Include WHOIS
-        description: false = headerless CSV pages; true = header on every page
+        description: False = headerless CSV pages; true = header on every page
         type: boolean
         default: false
         required: true
+        example: false
     output:
       events:
         title: Events
@@ -375,35 +748,25 @@ triggers:
         description: Offset to resume from on the next run
         type: integer
         required: false
+        example: 0
 
   threat_feed:
     title: Threat Feed
-    description: Poll a WhoisFreaks threat feed (phishing, malware, or spam).
+    description: Poll a WhoisFreaks threat feed (phishing, malware, or spam)
     input:
       date:
         title: Date
-        description: Required YYYY-MM-DD. Must fall between available_from and last_update for the selected threat feed.
+        description: Optional YYYY-MM-DD backfill seed. Must be between available_from and last_update for the feed. Once this date is fully ingested, the trigger automatically continues with the latest date reported by the status endpoint. Intermediate dates between the seed and the latest are not backfilled. Omit to start from the latest date immediately
         type: string
-        required: true
-        example: "2026-10-12"
+        required: false
+        example: "2026-09-14"
       batch_size:
         title: Batch Size
         description: Number of rows per emitted batch (controls the limit parameter)
         type: integer
         default: 500
         required: true
-      max_rows_per_run:
-        title: Max Rows per Run
-        description: Cap on total rows fetched in a single trigger run
-        type: integer
-        default: 50000
-        required: true
-      dedupe_window_days:
-        title: Dedupe Window Days
-        description: Suppress duplicate events seen within this window
-        type: integer
-        default: 1
-        required: true
+        example: 500
       threat_type:
         title: Threat Type
         description: Which threat feed to poll
@@ -411,6 +774,13 @@ triggers:
         required: true
         enum: [phishing, malware, spam]
         example: phishing
+      poll_interval_minutes:
+        title: Poll Interval Minutes
+        description: Minutes to sleep between status checks after finishing a date
+        type: integer
+        default: 60
+        required: true
+        example: 60
     output:
       events:
         title: Events
@@ -422,3 +792,4 @@ triggers:
         description: Offset to resume from on the next run
         type: integer
         required: false
+        example: 0

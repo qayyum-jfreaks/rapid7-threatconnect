@@ -4,8 +4,8 @@ import os
 sys.path.append(os.path.abspath("../"))
 
 from unittest import TestCase
-from komand_whoisfreaks.connection.connection import Connection
-from komand_whoisfreaks.actions.ip_whois import IpWhois
+from icon_whoisfreaks.connection.connection import Connection
+from icon_whoisfreaks.actions.ip_whois import IpWhois
 import json
 import logging
 

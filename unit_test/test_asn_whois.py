@@ -4,8 +4,8 @@ import os
 sys.path.append(os.path.abspath("../"))
 
 from unittest import TestCase
-from komand_whoisfreaks.connection.connection import Connection
-from komand_whoisfreaks.actions.asn_whois import AsnWhois
+from icon_whoisfreaks.connection.connection import Connection
+from icon_whoisfreaks.actions.asn_whois import AsnWhois
 import json
 import logging
 
@@ -17,5 +17,4 @@ class TestAsnWhois(TestCase):
 
         TODO: Implement test cases here
         """
-
         self.fail("Unimplemented Test Case")
